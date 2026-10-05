@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="uk" data-bs-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <title>Пособник спамера - Керування списком</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="bg-dark">
+<nav class="navbar navbar-dark bg-black mb-4 border-bottom border-secondary">
+  <div class="container">
+    <span class="navbar-brand fw-semibold">Пособник спамера</span>
+    <div>
+      <a href="/" class="btn btn-outline-secondary btn-sm me-2">Розсилка</a>
+      <a href="/manage" class="btn btn-secondary btn-sm">Керування списком</a>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+  <% if (error === 'duplicate_email') { %>
+    <div class="alert alert-danger">Такий email вже існує в базі даних!</div>
+  <% } %>
+
+  <div class="row g-4">
+    <div class="col-md-4">
+      <div class="card bg-dark-subtle border-secondary shadow-sm">
+        <div class="card-header bg-black border-secondary">
+          <span class="fw-semibold text-light">Додати контакт</span>
+        </div>
+        <div class="card-body">
+          <form action="/manage/add" method="POST">
+            <div class="mb-2">
+              <label class="form-label small text-light">Прізвище</label>
+              <input type="text" name="last_name" class="form-control form-control-sm" required>
+            </div>
+            <div class="mb-2">
+              <label class="form-label small text-light">Ім'я</label>
+              <input type="text" name="first_name" class="form-control form-control-sm" required>
+            </div>
+            <div class="mb-2">
+              <label class="form-label small text-light">По батькові</label>
+              <input type="text" name="middle_name" class="form-control form-control-sm" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label small text-light">Email</label>
+              <input type="email" name="email" class="form-control form-control-sm" required>
+            </div>
+            <button type="submit" class="btn btn-secondary btn-sm w-100">Додати</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-8">
+      <div class="card bg-dark-subtle border-secondary shadow-sm">
+        <div class="card-header bg-black border-secondary">
+          <span class="fw-semibold text-light">Список контактів (<%= contacts.length %>)</span>
+        </div>
+        <div class="card-body p-0">
+          <table class="table table-dark table-hover mb-0">
+            <thead>
+              <tr>
+                <th>Прізвище, Ім'я, По батькові</th>
+                <th>Email</th>
+                <th width="160">Дії</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% contacts.forEach(contact => { %>
+              <tr>
+                <td class="align-middle"><%= contact.last_name %> <%= contact.first_name %> <%= contact.middle_name %></td>
+                <td class="align-middle"><small class="text-secondary"><%= contact.email %></small></td>
+                <td class="align-middle">
+                  <a href="/manage/edit/<%= contact.id %>" class="btn btn-sm btn-outline-secondary">Змінити</a>
+                  <form action="/manage/delete/<%= contact.id %>" method="POST" class="d-inline"
+                        onsubmit="return confirm('Вилучити контакт?')">
+                    <button type="submit" class="btn btn-sm btn-outline-danger">Видалити</button>
+                  </form>
+                </td>
+              </tr>
+              <% }) %>
+              <% if (contacts.length === 0) { %>
+              <tr><td colspan="3" class="text-center text-secondary py-3">Список порожній</td></tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="uk" data-bs-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <title>Пособник спамера - Результат</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="bg-dark">
+<nav class="navbar navbar-dark bg-black mb-4 border-bottom border-secondary">
+  <div class="container">
+    <span class="navbar-brand fw-semibold">Пособник спамера</span>
+    <div>
+      <a href="/" class="btn btn-outline-secondary btn-sm me-2">Розсилка</a>
+      <a href="/manage" class="btn btn-outline-secondary btn-sm">Керування списком</a>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="card bg-dark-subtle border-secondary shadow-sm">
+    <div class="card-header bg-black border-secondary">
+      <span class="fw-semibold text-light">Результат розсилки</span>
+    </div>
+    <div class="card-body">
+      <% if (sentCount === total) { %>
+        <div class="alert alert-success">
+          Успішно відправлено <strong><%= sentCount %></strong> з <strong><%= total %></strong> листів.
+        </div>
+      <% } else { %>
+        <div class="alert alert-warning">
+          Відправлено <strong><%= sentCount %></strong> з <strong><%= total %></strong> листів.
+        </div>
+      <% } %>
+
+      <% if (errors.length > 0) { %>
+        <h6 class="text-secondary small">Помилки при відправці:</h6>
+        <ul class="list-group mb-3">
+          <% errors.forEach(err => { %>
+            <li class="list-group-item list-group-item-danger small"><%= err %></li>
+          <% }) %>
+        </ul>
+      <% } %>
+
+      <a href="/" class="btn btn-secondary btn-sm">Повернутися до розсилки</a>
+    </div>
+  </div>
+</div>
+</body>
+</html>

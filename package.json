@@ -1,0 +1,16 @@
+{
+  "name": "spammer-helper",
+  "version": "1.0.0",
+  "description": "Email mailing list application",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "ejs": "^3.1.9",
+    "mysql2": "^3.6.0",
+    "nodemailer": "^6.9.4",
+    "body-parser": "^1.20.2"
+  }
+}

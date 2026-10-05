@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="uk" data-bs-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <title>Пособник спамера - Розсилка</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="bg-dark">
+<nav class="navbar navbar-dark bg-black mb-4 border-bottom border-secondary">
+  <div class="container">
+    <span class="navbar-brand fw-semibold">Пособник спамера</span>
+    <div>
+      <a href="/" class="btn btn-secondary btn-sm me-2">Розсилка</a>
+      <a href="/manage" class="btn btn-outline-secondary btn-sm">Керування списком</a>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+  <% if (locals.error === 'no_contacts') { %>
+    <div class="alert alert-danger">Оберіть хоча б один контакт!</div>
+  <% } %>
+
+  <form action="/send" method="POST">
+    <div class="row g-4">
+      <div class="col-md-6">
+        <div class="card bg-dark-subtle border-secondary shadow-sm">
+          <div class="card-header bg-black border-secondary d-flex justify-content-between align-items-center">
+            <span class="fw-semibold text-light">Список адресатів</span>
+            <div>
+              <button type="button" class="btn btn-sm btn-outline-secondary" onclick="selectAll()">Вибрати всіх</button>
+              <button type="button" class="btn btn-sm btn-outline-secondary ms-1" onclick="deselectAll()">Зняти все</button>
+            </div>
+          </div>
+          <div class="card-body p-0">
+            <table class="table table-dark table-hover mb-0">
+              <thead>
+                <tr>
+                  <th width="40"></th>
+                  <th>ПІБ</th>
+                  <th>Email</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% contacts.forEach(contact => { %>
+                <tr>
+                  <td class="text-center align-middle">
+                    <input type="checkbox" name="selectedContacts" value="<%= contact.id %>" class="form-check-input contact-check">
+                  </td>
+                  <td class="align-middle"><%= contact.last_name %> <%= contact.first_name %> <%= contact.middle_name %></td>
+                  <td class="align-middle"><small class="text-secondary"><%= contact.email %></small></td>
+                </tr>
+                <% }) %>
+                <% if (contacts.length === 0) { %>
+                <tr><td colspan="3" class="text-center text-secondary py-3">Список порожній</td></tr>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="card bg-dark-subtle border-secondary shadow-sm">
+          <div class="card-header bg-black border-secondary">
+            <span class="fw-semibold text-light">Повідомлення</span>
+          </div>
+          <div class="card-body">
+            <label class="form-label text-secondary small">Оберіть шаблон:</label>
+            <% templates.forEach(template => { %>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="templateId"
+                     id="template<%= template.id %>" value="<%= template.id %>"
+                     onclick="applyTemplate(<%= template.id %>)">
+              <label class="form-check-label text-light" for="template<%= template.id %>">
+                <%= template.name %> - <small class="text-secondary"><%= template.subject %></small>
+              </label>
+            </div>
+            <% }) %>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="templateId" id="templateCustom" value="custom" onclick="showCustom()">
+              <label class="form-check-label text-light" for="templateCustom">Свій текст</label>
+            </div>
+
+            <hr class="border-secondary">
+
+            <div id="templatePreview" class="mb-3 d-none">
+              <div class="alert alert-secondary p-2 small">
+                <strong>Тема:</strong> <span id="previewSubject"></span><br>
+                <strong>Текст:</strong> <span id="previewBody"></span>
+              </div>
+            </div>
+
+            <div id="customFields" class="d-none">
+              <div class="mb-2">
+                <label class="form-label small text-light">Тема листа:</label>
+                <input type="text" name="customSubject" class="form-control form-control-sm" placeholder="Введіть тему">
+              </div>
+              <div class="mb-2">
+                <label class="form-label small text-light">Текст листа:</label>
+                <textarea name="customBody" class="form-control form-control-sm" rows="4" placeholder="Введіть текст повідомлення"></textarea>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-secondary w-100 mt-3">Відправити листи</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<script>
+  const templates = <%- JSON.stringify(templates) %>;
+
+  function applyTemplate(id) {
+    const t = templates.find(t => t.id === id);
+    document.getElementById('previewSubject').textContent = t.subject;
+    document.getElementById('previewBody').textContent = t.body;
+    document.getElementById('templatePreview').classList.remove('d-none');
+    document.getElementById('customFields').classList.add('d-none');
+  }
+
+  function showCustom() {
+    document.getElementById('templatePreview').classList.add('d-none');
+    document.getElementById('customFields').classList.remove('d-none');
+  }
+
+  function selectAll() {
+    document.querySelectorAll('.contact-check').forEach(cb => cb.checked = true);
+  }
+
+  function deselectAll() {
+    document.querySelectorAll('.contact-check').forEach(cb => cb.checked = false);
+  }
+</script>
+</body>
+</html>
